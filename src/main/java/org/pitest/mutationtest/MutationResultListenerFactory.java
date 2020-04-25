@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Tobias Stadler
+ * Copyright 2010 Henry Coles
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,38 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
-package org.pitest.junit5.repository;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+package org.pitest.mutationtest;
 
-/**
- *
- * @author Tobias Stadler
- */
-public class TestClassWithTags {
+import java.util.Properties;
 
-    @Test
-    public void testWithoutTag() {
+import org.pitest.plugin.ToolClasspathPlugin;
 
-    }
+public interface MutationResultListenerFactory extends ToolClasspathPlugin {
 
-    @Test
-    @Tag("foo")
-    public void testWithTag() {
+  MutationResultListener getListener(Properties props, ListenerArguments args);
 
-    }
-
-    @Test
-    @Tag("included")
-    public void testWithIncludedTag() {
-
-    }
-
-    @Test
-    @Tag("excluded")
-    public void testWithExcludedTag() {
-
-    }
+  String name();
 
 }

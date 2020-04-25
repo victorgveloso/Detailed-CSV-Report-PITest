@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Tobias Stadler
+ * Copyright 2010 Henry Coles
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
-package org.pitest.junit5.repository;
+package org.pitest.mutationtest;
 
-import org.junit.jupiter.api.Test;
+import java.io.Reader;
+import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Optional;
 
-/**
- *
- * @author Tobias Stadler
- */
-public class TestClassWithFailingTest {
-    
-    @Test
-    public void test() {
-        assertTrue(false);
-    }
-    
+public interface SourceLocator {
+  Optional<Reader> locate(Collection<String> classes, String fileName);
+
 }

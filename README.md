@@ -1,15 +1,8 @@
-# JUnit 5 Plugin 
+# All killing tests to CSV Plugin 
 
-Adds support to pitest for JUnit 5 and the Jupiter api.
+Adds support to pitest for exporting detailed CSV files. Transform last column (first killing test) into a variable size column (killing tests)
 
-## Versions
-
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pitest/pitest-junit5-plugin/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pitest/pitest-junit5-plugin)
-
-* 0.5-0.11 requires pitest 1.4.0 or above
-* 0.4 requires pitest 1.3.2 or above
-* 0.3 requires pitest 1.3.0 or 1.3.1
-* 0.2 requires pitest 1.2.5 
+## Forked from [JUnit 5 plugin](https://github.com/pitest/pitest-junit5-plugin)
 
 ## Usage
 
@@ -25,11 +18,17 @@ To activate the plugin it must be placed on the classpath of the pitest tool (**
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
         <version>1.4.9</version>
+        <configuration>
+            <fullMutationMatrix>true</fullMutationMatrix>
+            <outputFormats>
+             <param>CSV</param>
+            </outputFormats>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.pitest</groupId>
-            <artifactId>pitest-junit5-plugin</artifactId>
-            <version>0.10-SNAPSHOT</version>
+            <artifactId>pitest-detailed-csv-plugin</artifactId>
+            <version>0.3-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -47,7 +46,7 @@ buildscript {
    configurations.maybeCreate("pitest")
    dependencies {
        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.5'
-       pitest 'org.pitest:pitest-junit5-plugin:0.10'
+       pitest 'org.pitest:pitest-detailed-csv-plugin:0.3'
    }
 }
 
@@ -55,12 +54,13 @@ apply plugin: "info.solidsoft.pitest"
 
 pitest {
     pitestVersion = "1.4.9"
-    testPlugin = "junit5"
     targetClasses = ['our.base.package.*']  // by default "${project.group}.*"
+    fullMutationMatrix = true
+    outputFormats = ['CSV']
 }
 ```
 See [gradle-pitest-plugin documentation](http://gradle-pitest-plugin.solidsoft.info/) for more configuration options.
 
 ## About
 
-Plugin originally created by @tobiasstadler.
+Plugin originally created by @victorgv.
