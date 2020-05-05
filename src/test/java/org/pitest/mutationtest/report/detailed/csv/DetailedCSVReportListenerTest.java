@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.pitest.coverage.CoverageDatabase;
 import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.MutationStatusTestPair;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class DetailedCSVReportListenerTest {
 
@@ -23,12 +24,21 @@ public class DetailedCSVReportListenerTest {
     private DetailedCSVReportListener testee;
 
     @Mock
-    private Writer out;
+    private Writer mutationOutput;
+
+    @Mock
+    private Writer coverageOutput;
+
+    @Mock
+    private Writer locOutput;
+
+    @Mock
+    private CoverageDatabase coverage;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        this.testee = new DetailedCSVReportListener(this.out);
+        testee = new DetailedCSVReportListener(mutationOutput, coverageOutput, locOutput, coverage);
     }
 
     @Test
@@ -44,23 +54,21 @@ public class DetailedCSVReportListenerTest {
         );
         this.testee.handleMutationResult(MutationTestResultMother
                 .createClassResults(mr));
-        final String expected = "file,clazz,mutator,method,42,KILLED,"
-                + String.join(",", killingTests)
-                + NEW_LINE;
-        verify(this.out).write(expected);
+        for (String test : killingTests) {
+            final String expected = test + "KILLED,clazz::method,42,mutator" + NEW_LINE;
+            verify(this.mutationOutput).write(expected);
+        }
     }
 
     @Test
-    public void shouldOutputNoneWhenNoKillingTestFound() throws IOException {
+    public void shouldOutputNoneWhenNoKillingTestFound() {
         final MutationResult mr = new MutationResult(
                 MutationTestResultMother.createDetails(), MutationStatusTestPair.notAnalysed(1,
                 DetectionStatus.SURVIVED));
         this.testee.handleMutationResult(MutationTestResultMother
                 .createClassResults(mr));
-        final String expected = "file,clazz,mutator,method,42,SURVIVED,none"
-                + NEW_LINE;
 
-        verify(this.out).write(expected);
+        verifyNoInteractions(this.mutationOutput);
     }
 
 }

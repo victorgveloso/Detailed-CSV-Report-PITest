@@ -46,7 +46,7 @@ public class CoverageData implements CoverageDatabase {
   private static final Logger                                 LOG           = Log
       .getLogger();
 
-  // We calculate block coverage, but everything currently runs on line
+  // We calculate block coverage, but currently everything runs on line
   // coverage. Ugly mess of maps below should go when
   // api changed to work via blocks
   private final Map<InstructionLocation, Set<TestInfo>>       instructionCoverage;
