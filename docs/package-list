@@ -1,4 +1,5 @@
 org.pitest.coverage
 org.pitest.mutationtest
 org.pitest.mutationtest.report.detailed.csv
+org.pitest.mutationtest.report.detailed.csv.utils
 org.pitest.util
