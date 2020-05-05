@@ -7,6 +7,7 @@ public interface MutationReporter {
     /**
      * Export mutation data to proper output file.
      *
+     * @param metaData   Finished mutation information
      * @param fileWriter Utility object for handling IO
      */
     void reportMutationResults(ClassMutationResults metaData, FileWriter fileWriter);

@@ -1,14 +1,8 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
-import org.pitest.coverage.CoverageData;
-import org.pitest.coverage.CoverageDatabase;
 import org.pitest.mutationtest.ClassMutationResults;
 import org.pitest.mutationtest.MutationResultListener;
 import org.pitest.mutationtest.report.detailed.csv.utils.FileWriter;
-import org.pitest.mutationtest.report.detailed.csv.utils.FileWriterImpl;
-import org.pitest.util.ResultOutputStrategy;
-
-import java.io.Writer;
 
 /**
  * Implementation of Listener responsible for generating the following files:
@@ -28,31 +22,14 @@ public class DetailedCSVReportListener implements MutationResultListener {
     /**
      * Main constructor (used by Abstract Factory).
      *
-     * @param outputStrategy Output files creator
-     * @param coverage       Object for coverage data recovering
+     * @param fileWriter       Utility object for writing to file abstraction
+     * @param coverageReporter Test coverage report generator
+     * @param mutationReporter Mutation test report generator
      */
-    public DetailedCSVReportListener(final ResultOutputStrategy outputStrategy, final CoverageDatabase coverage) {
-        this(outputStrategy.createWriterForFile("mutations.csv"), outputStrategy.createWriterForFile("coverage.csv"), outputStrategy.createWriterForFile("classes-loc.csv"), coverage);
-    }
-
-    /**
-     * Constructor with easily mockable parameters (used for Testing purpose).
-     *
-     * @param mutationOutput Relates mutation with tests (For each tests which mutations survived or not)
-     * @param coverageOutput Describes block coverage for each test case
-     * @param locOutput      Stores the size (number of instructions) of each source code classes
-     * @param coverage       Object for coverage data recovering
-     */
-    public DetailedCSVReportListener(final Writer mutationOutput, final Writer coverageOutput, final Writer locOutput, final CoverageDatabase coverage) {
-        try {
-            this.fileWriter = new FileWriterImpl();
-            ReportFormatter reportFormatter = new ReportFormatterImpl();
-            this.mutationReporter = new MutationReporterImpl(reportFormatter, mutationOutput);
-            this.coverageReporter = new CoverageReporterImpl((CoverageData) coverage, coverageOutput, locOutput, reportFormatter);
-        } catch (ClassCastException exception) {
-            System.err.println("DetailedCSV currently only supports default CoverageDatabase (CoverageData)");
-            throw exception;
-        }
+    public DetailedCSVReportListener(FileWriter fileWriter, CoverageReporter coverageReporter, MutationReporter mutationReporter) {
+        this.coverageReporter = coverageReporter;
+        this.mutationReporter = mutationReporter;
+        this.fileWriter = fileWriter;
     }
 
     /**

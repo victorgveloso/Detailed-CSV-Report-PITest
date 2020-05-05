@@ -12,6 +12,13 @@ import java.util.stream.Collectors;
  * CSV Report Formatting utility class
  */
 public class ReportFormatterImpl implements ReportFormatter {
+    private static ReportFormatter instance;
+
+    public static ReportFormatter getInstance() {
+        if (instance == null) instance = new ReportFormatterImpl();
+        return instance;
+    }
+
     @Override
     public String clearSyntax(String s) {
         return s.replaceFirst("\\.\\[engine:.+?]/\\[class:.+?]/\\[method:(.+?)\\(\\)]", "::$1");

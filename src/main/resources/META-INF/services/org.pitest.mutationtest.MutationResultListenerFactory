@@ -1,1 +1,1 @@
-org.pitest.mutationtest.report.detailed.csv.DetailedCSVReportFactory
+org.pitest.mutationtest.report.detailed.csv.DetailedCSVReportFactoryImpl

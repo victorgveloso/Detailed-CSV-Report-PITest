@@ -1,44 +1,82 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
+import org.pitest.coverage.CoverageData;
 import org.pitest.mutationtest.ListenerArguments;
 import org.pitest.mutationtest.MutationResultListener;
 import org.pitest.mutationtest.MutationResultListenerFactory;
+import org.pitest.mutationtest.report.detailed.csv.utils.FileWriter;
 
-import java.util.Properties;
+import java.io.Writer;
 
-/**
- * MutationResultListener Abstract Factory implementation for DetailedCSVReportListener class
- */
-public class DetailedCSVReportFactory implements MutationResultListenerFactory {
+public interface DetailedCSVReportFactory extends MutationResultListenerFactory {
     /**
-     * DetailedCSVReportListener Factory Method
+     * Alternative DetailedCSVReportListener Factory Method
      *
-     * @param props Configuration properties
-     * @param args  Wrapper of common used PITest objects and values
+     * @param args             Wrapper of common used PITest objects and values
+     * @param coverageFilename Coverage report filename
+     * @param locFilename      Lines of code report filename
+     * @param mutationFilename Mutation report filename
      * @return Custom result listener
      */
-    @Override
-    public MutationResultListener getListener(Properties props, ListenerArguments args) {
-        return new DetailedCSVReportListener(args.getOutputStrategy(), args.getCoverage());
-    }
+    MutationResultListener getListener(ListenerArguments args, String coverageFilename, String locFilename, String mutationFilename);
 
     /**
-     * Get the name used on pitest's output format configuration .
+     * Alternative DetailedCSVReportListener Factory Method
      *
-     * @return Output format name
+     * @param fileWriter       Utility object for writing to file abstraction
+     * @param coverageReporter Test coverage report generator
+     * @param mutationReporter Mutation test report generator
+     * @return Custom result listener
      */
-    @Override
-    public String name() {
-        return "DetailedCSV";
-    }
+    MutationResultListener getListener(FileWriter fileWriter, CoverageReporter coverageReporter, MutationReporter mutationReporter);
 
     /**
-     * Get detailed description printed during the pitest execution.
+     * Delegates to FileWriter.getInstance()
      *
-     * @return Detailed description.
+     * @return the instance of file writer singleton
      */
-    @Override
-    public String description() {
-        return "Detailed csv report plugin (reports both method coverage and mutation  all killing tests for each mutant";
-    }
+    FileWriter getFileWriter();
+
+    /**
+     * Delegates to ReportFormatter.getInstance()
+     *
+     * @return the instance of report formatter singleton
+     */
+    ReportFormatter getReportFormatter();
+
+    /**
+     * MutationReporter Factory Method
+     *
+     * @param mutationOutput Mutation report file writer
+     * @return a mutation reporter
+     */
+    MutationReporter getMutationReporter(Writer mutationOutput);
+
+    /**
+     * MutationReporter Factory Method
+     *
+     * @param reportFormatter Utility for CSV report formatting
+     * @param mutationOutput  Mutation report file writer
+     * @return a mutation reporter
+     */
+    MutationReporter getMutationReporter(ReportFormatter reportFormatter, Writer mutationOutput);
+
+    /**
+     * @param coverageData   Core object for coverage data recovering
+     * @param coverageOutput Coverage report file writer
+     * @param locOutput      Lines of code report file writer
+     * @return a coverage reporter
+     */
+    CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput);
+
+    /**
+     * CoverageReporter FactoryMethod
+     *
+     * @param coverageData    Core object for coverage data recovering
+     * @param coverageOutput  Coverage report file writer
+     * @param locOutput       Lines of code report file writer
+     * @param reportFormatter Utility for CSV report formatting
+     * @return a coverage reporter
+     */
+    CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput, ReportFormatter reportFormatter);
 }

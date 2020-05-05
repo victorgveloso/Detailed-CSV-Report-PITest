@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.pitest.coverage.CoverageDatabase;
+import org.pitest.coverage.CoverageData;
 import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.MutationStatusTestPair;
@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 public class DetailedCSVReportListenerTest {
 
@@ -33,12 +34,13 @@ public class DetailedCSVReportListenerTest {
     private Writer locOutput;
 
     @Mock
-    private CoverageDatabase coverage;
+    private CoverageData coverage;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        testee = new DetailedCSVReportListener(mutationOutput, coverageOutput, locOutput, coverage);
+        DetailedCSVReportFactoryImpl detailedCSVReportFactory = new DetailedCSVReportFactoryImpl();
+        testee = new DetailedCSVReportListener(detailedCSVReportFactory.getFileWriter(), detailedCSVReportFactory.getCoverageReporter(coverage, coverageOutput, locOutput), detailedCSVReportFactory.getMutationReporter(mutationOutput));
     }
 
     @Test
