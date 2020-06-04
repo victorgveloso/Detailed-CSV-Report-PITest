@@ -22,7 +22,7 @@ public class DetailedCSVReportFactoryImpl implements DetailedCSVReportFactory {
      */
     @Override
     public MutationResultListener getListener(Properties props, ListenerArguments args) {
-        return getListener(args, "coverage.csv", "classes-loc.csv", "mutations.csv");
+        return getListener(args, "coverage.csv", "classes-loc.csv", "detailed-mutations.csv");
     }
 
     @Override

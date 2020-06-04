@@ -44,14 +44,14 @@ public class MutationReporterImpl implements MutationReporter {
      */
     private String generateMutationReport(MutationResult mutation) {
         String mutationInfo = getMutationInfo(mutation);
-        return Stream.concat(describeTests(mutationInfo, mutation.getSucceedingTests(), DetectionStatus.SURVIVED), describeTests(mutationInfo, mutation.getKillingTests(), DetectionStatus.KILLED)).collect(Collectors.joining(NEW_LINE));
+        return Stream.concat(describeTests(mutationInfo, mutation.getSucceedingTests(), DetectionStatus.SURVIVED), describeTests(mutationInfo, mutation.getKillingTests(), DetectionStatus.KILLED)).collect(Collectors.joining(NEW_LINE)) + NEW_LINE;
     }
 
     /**
      * Describe mutation in CSV complaining format
      *
      * @param mutation mutation to describe
-     * @return CSV description of mutation
+     * @return CSV description of mutation ("class::testcase-method,KILLED?,class::method,mutated-line,mutator")
      */
     private String getMutationInfo(MutationResult mutation) {
         return reportFormatter.makeCsv(reportFormatter.getFormattedLocation(mutation), mutation.getDetails().getLineNumber(), mutation.getDetails().getMutator());
