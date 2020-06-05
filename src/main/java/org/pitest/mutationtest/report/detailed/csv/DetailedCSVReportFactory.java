@@ -1,6 +1,5 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
-import org.pitest.coverage.CoverageData;
 import org.pitest.mutationtest.ListenerArguments;
 import org.pitest.mutationtest.MutationResultListener;
 import org.pitest.mutationtest.MutationResultListenerFactory;
@@ -24,11 +23,10 @@ public interface DetailedCSVReportFactory extends MutationResultListenerFactory 
      * Alternative DetailedCSVReportListener Factory Method
      *
      * @param fileWriter       Utility object for writing to file abstraction
-     * @param coverageReporter Test coverage report generator
      * @param mutationReporter Mutation test report generator
      * @return Custom result listener
      */
-    MutationResultListener getListener(FileWriter fileWriter, CoverageReporter coverageReporter, MutationReporter mutationReporter);
+    MutationResultListener getListener(FileWriter fileWriter, MutationReporter mutationReporter);
 
     /**
      * Delegates to FileWriter.getInstance()
@@ -61,22 +59,4 @@ public interface DetailedCSVReportFactory extends MutationResultListenerFactory 
      */
     MutationReporter getMutationReporter(ReportFormatter reportFormatter, Writer mutationOutput);
 
-    /**
-     * @param coverageData   Core object for coverage data recovering
-     * @param coverageOutput Coverage report file writer
-     * @param locOutput      Lines of code report file writer
-     * @return a coverage reporter
-     */
-    CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput);
-
-    /**
-     * CoverageReporter FactoryMethod
-     *
-     * @param coverageData    Core object for coverage data recovering
-     * @param coverageOutput  Coverage report file writer
-     * @param locOutput       Lines of code report file writer
-     * @param reportFormatter Utility for CSV report formatting
-     * @return a coverage reporter
-     */
-    CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput, ReportFormatter reportFormatter);
 }

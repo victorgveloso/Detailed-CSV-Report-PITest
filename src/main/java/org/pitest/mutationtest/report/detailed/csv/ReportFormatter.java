@@ -1,6 +1,5 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
-import org.pitest.coverage.BlockCoverage;
 import org.pitest.mutationtest.MutationResult;
 
 public interface ReportFormatter {
@@ -19,14 +18,6 @@ public interface ReportFormatter {
      * @return valid CSV row
      */
     String makeCsv(Object... os);
-
-    /**
-     * Method name and class formatting (specialized for BlockCoverage, delegates to generic method).
-     *
-     * @param block Covered block
-     * @return Formatted path
-     */
-    String getFormattedLocation(BlockCoverage block);
 
     /**
      * Method name and class formatting (specialized for MutationResult, delegates to generic method).

@@ -14,20 +14,16 @@ import org.pitest.mutationtest.report.detailed.csv.utils.FileWriter;
  */
 public class DetailedCSVReportListener implements MutationResultListener {
 
-    private CoverageReporter coverageReporter;
     private MutationReporter mutationReporter;
 
     private FileWriter fileWriter;
 
     /**
      * Main constructor (used by Abstract Factory).
-     *
-     * @param fileWriter       Utility object for writing to file abstraction
-     * @param coverageReporter Test coverage report generator
+     *  @param fileWriter       Utility object for writing to file abstraction
      * @param mutationReporter Mutation test report generator
      */
-    public DetailedCSVReportListener(FileWriter fileWriter, CoverageReporter coverageReporter, MutationReporter mutationReporter) {
-        this.coverageReporter = coverageReporter;
+    public DetailedCSVReportListener(FileWriter fileWriter, MutationReporter mutationReporter) {
         this.mutationReporter = mutationReporter;
         this.fileWriter = fileWriter;
     }
@@ -39,7 +35,6 @@ public class DetailedCSVReportListener implements MutationResultListener {
      */
     @Override
     public void runStart() {
-        coverageReporter.createCoverageReport(fileWriter);
     }
 
     /**
@@ -49,8 +44,6 @@ public class DetailedCSVReportListener implements MutationResultListener {
      */
     @Override
     public void runEnd() {
-        coverageReporter.createLOCReport(fileWriter);
-
         fileWriter.closeAllUsedFiles();
     }
 
@@ -61,8 +54,6 @@ public class DetailedCSVReportListener implements MutationResultListener {
      */
     @Override
     public void handleMutationResult(final ClassMutationResults metaData) {
-        // Satisfy line coverage analysis pre-conditions
-        coverageReporter.appendClassTotalLines(metaData.getFileName(), metaData.getPackageName());
         // Report mutation results
         mutationReporter.reportMutationResults(metaData, fileWriter);
     }

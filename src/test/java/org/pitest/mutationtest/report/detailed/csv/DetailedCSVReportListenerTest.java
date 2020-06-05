@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.pitest.coverage.CoverageData;
 import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.MutationStatusTestPair;
@@ -33,14 +32,11 @@ public class DetailedCSVReportListenerTest {
     @Mock
     private Writer locOutput;
 
-    @Mock
-    private CoverageData coverage;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         DetailedCSVReportFactoryImpl detailedCSVReportFactory = new DetailedCSVReportFactoryImpl();
-        testee = new DetailedCSVReportListener(detailedCSVReportFactory.getFileWriter(), detailedCSVReportFactory.getCoverageReporter(coverage, coverageOutput, locOutput), detailedCSVReportFactory.getMutationReporter(mutationOutput));
+        testee = new DetailedCSVReportListener(detailedCSVReportFactory.getFileWriter(), detailedCSVReportFactory.getMutationReporter(mutationOutput));
     }
 
     @Test

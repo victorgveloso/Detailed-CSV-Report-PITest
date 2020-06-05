@@ -1,9 +1,7 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
 import org.pitest.classinfo.ClassName;
-import org.pitest.coverage.BlockCoverage;
 import org.pitest.mutationtest.MutationResult;
-import org.pitest.mutationtest.engine.Location;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -27,12 +25,6 @@ public class ReportFormatterImpl implements ReportFormatter {
     @Override
     public String makeCsv(final Object... os) {
         return Arrays.stream(os).map(Object::toString).collect(Collectors.joining(","));
-    }
-
-    @Override
-    public String getFormattedLocation(BlockCoverage block) {
-        Location location = block.getBlock().getLocation();
-        return getFormattedLocation(location.getClassName(), location.getMethodName().name());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
-import org.pitest.coverage.CoverageData;
 import org.pitest.mutationtest.ListenerArguments;
 import org.pitest.mutationtest.MutationResultListener;
 import org.pitest.mutationtest.report.detailed.csv.utils.FileWriter;
@@ -27,19 +26,16 @@ public class DetailedCSVReportFactoryImpl implements DetailedCSVReportFactory {
 
     @Override
     public MutationResultListener getListener(ListenerArguments args, String coverageFilename, String locFilename, String mutationFilename) {
-        Writer coverageOutput = args.getOutputStrategy().createWriterForFile(coverageFilename);
-        Writer locOutput = args.getOutputStrategy().createWriterForFile(locFilename);
         Writer mutationOutput = args.getOutputStrategy().createWriterForFile(mutationFilename);
 
-        CoverageReporter coverageReporter = getCoverageReporter((CoverageData) args.getCoverage(), coverageOutput, locOutput);
         MutationReporter mutationReporter = getMutationReporter(mutationOutput);
-        return getListener(getFileWriter(), coverageReporter, mutationReporter);
+        return getListener(getFileWriter(), mutationReporter);
 
     }
 
     @Override
-    public MutationResultListener getListener(FileWriter fileWriter, CoverageReporter coverageReporter, MutationReporter mutationReporter) {
-        return new DetailedCSVReportListener(fileWriter, coverageReporter, mutationReporter);
+    public MutationResultListener getListener(FileWriter fileWriter, MutationReporter mutationReporter) {
+        return new DetailedCSVReportListener(fileWriter, mutationReporter);
     }
 
     @Override
@@ -55,16 +51,6 @@ public class DetailedCSVReportFactoryImpl implements DetailedCSVReportFactory {
     @Override
     public MutationReporter getMutationReporter(ReportFormatter reportFormatter, Writer mutationOutput) {
         return new MutationReporterImpl(reportFormatter, mutationOutput);
-    }
-
-    @Override
-    public CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput) {
-        return getCoverageReporter(coverageData, coverageOutput, locOutput, getReportFormatter());
-    }
-
-    @Override
-    public CoverageReporter getCoverageReporter(CoverageData coverageData, Writer coverageOutput, Writer locOutput, ReportFormatter reportFormatter) {
-        return new CoverageReporterImpl(coverageData, coverageOutput, locOutput, reportFormatter);
     }
 
     @Override
