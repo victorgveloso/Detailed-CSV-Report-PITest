@@ -1,6 +1,5 @@
 package org.pitest.mutationtest.report.detailed.csv;
 
-import org.pitest.coverage.TestInfo;
 import org.pitest.mutationtest.ClassMutationResults;
 import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationResult;
@@ -45,12 +44,13 @@ public class MutationReporterImpl implements MutationReporter {
      */
     private String generateMutationReport(MutationResult mutation) {
         String mutationInfo = getMutationInfo(mutation);
-        Set<String> survivedTests = describeSurvivedTests(mutation, mutationInfo);
-        Set<String> killedTests = describeKilledTests(mutation, mutationInfo);
-        Set<String> succeedingTests = Stream.concat(survivedTests.stream(), killedTests.stream()).collect(Collectors.toSet());
-        Set<String> timedOutTests = describeTimedOutTests(countTimedOutTests(mutation), getTimedOutTestsName(mutation, succeedingTests), mutationInfo);
+        Set<String> survivedTests = new HashSet<>(mutation.getSucceedingTests());
+        Set<String> killedTests = new HashSet<>(mutation.getKillingTests());
+        Set<String> normalTests = Stream.concat(survivedTests.stream(), killedTests.stream()).collect(Collectors.toSet());
 
-        return concat(new HashSet<>(Arrays.asList(survivedTests.stream(), killedTests.stream(), timedOutTests.stream()))).collect(Collectors.joining(""));
+        Set<String> alternativeTests = describeAlternativeTests(countTimedOutTests(mutation), getAlternativeTestsName(mutation, normalTests), mutationInfo);
+
+        return concat(new HashSet<>(Arrays.asList(describeSurvivedTests(survivedTests, mutationInfo).stream(), describeKilledTests(killedTests, mutationInfo).stream(), alternativeTests.stream()))).collect(Collectors.joining(""));
     }
 
     private Stream<String> concat(Collection<Stream<String>> steams) {
@@ -76,25 +76,32 @@ public class MutationReporterImpl implements MutationReporter {
         }
     }
 
-    private Set<String> describeTimedOutTests(int timedOutTests, Set<String> tests, String mutationInfo) {
-        if (timedOutTests <= 0) {
-            return Collections.emptySet(); //TODO: Return NO_COVERAGE with compatible formatting
+    private Set<String> describeAlternativeTests(int timedOutTests, Set<String> tests, String mutationInfo) {
+        if (tests.size() != timedOutTests) {
+            System.out.println("" + tests.size() + " != " + timedOutTests);
+        }
+        if (tests.size() == timedOutTests && tests.size() <= 0) {
+            HashSet<String> none = new HashSet<>(Collections.singletonList("none"));
+            return describeTests(mutationInfo, none, DetectionStatus.NO_COVERAGE);
         }
         return describeTests(mutationInfo, tests, DetectionStatus.TIMED_OUT);
     }
 
     //TODO: Extract utility class (There's too much private methods in this class)
-    private Set<String> getTimedOutTestsName(MutationResult mutation, Set<String> filteringTests) {
-        Stream<String> allTestsName = mutation.getDetails().getTestsInOrder().stream().map(TestInfo::getName);
-        return allTestsName.filter(name -> filteringTests.stream().noneMatch(name::equals)).collect(Collectors.toSet());
+    private Set<String> getAlternativeTestsName(MutationResult mutation, Set<String> filteringTests) {
+        Set<String> formattedFilteringTests = filteringTests.stream().map(reportFormatter::clearSyntax).collect(Collectors.toSet());
+        Set<String> allTestsName = mutation.getDetails().getTestsInOrder().stream().map(tests -> reportFormatter.clearSyntax(tests.getName())).collect(Collectors.toSet());
+
+        allTestsName.removeAll(formattedFilteringTests);
+        return allTestsName;
     }
 
-    private Set<String> describeKilledTests(MutationResult mutation, String mutationInfo) {
-        return describeTests(mutationInfo, new HashSet<>(mutation.getKillingTests()), DetectionStatus.KILLED);
+    private Set<String> describeKilledTests(Set<String> tests, String mutationInfo) {
+        return describeTests(mutationInfo, tests, DetectionStatus.KILLED);
     }
 
-    private Set<String> describeSurvivedTests(MutationResult mutation, String mutationInfo) {
-        return describeTests(mutationInfo, new HashSet<>(mutation.getSucceedingTests()), DetectionStatus.SURVIVED);
+    private Set<String> describeSurvivedTests(Set<String> tests, String mutationInfo) {
+        return describeTests(mutationInfo, tests, DetectionStatus.SURVIVED);
     }
 
     /**
