@@ -8,6 +8,7 @@ import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.MutationStatusTestPair;
 import org.pitest.mutationtest.report.MutationTestResultMother;
+import org.pitest.mutationtest.report.detailed.csv.utils.Constants;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -17,8 +18,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 public class DetailedCSVReportListenerTest {
-
-    private static final String NEW_LINE = System.getProperty("line.separator");
     private static final List<String> killingTests = List.of("foo", "bar", "baz");
 
     private DetailedCSVReportListener testee;
@@ -35,7 +34,7 @@ public class DetailedCSVReportListenerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DetailedCSVReportFactoryImpl detailedCSVReportFactory = new DetailedCSVReportFactoryImpl();
+        DetailedCSVReportFactory detailedCSVReportFactory = new DetailedCSVReportFactoryImpl();
         testee = new DetailedCSVReportListener(detailedCSVReportFactory.getFileWriter(), detailedCSVReportFactory.getMutationReporter(mutationOutput));
     }
 
@@ -53,7 +52,7 @@ public class DetailedCSVReportListenerTest {
         this.testee.handleMutationResult(MutationTestResultMother
                 .createClassResults(mr));
         for (String test : killingTests) {
-            final String expected = test + "KILLED,clazz::method,42,mutator" + NEW_LINE;
+            final String expected = test + "KILLED,clazz::method,42,mutator" + Constants.NEW_LINE;
             verify(this.mutationOutput).write(expected);
         }
     }

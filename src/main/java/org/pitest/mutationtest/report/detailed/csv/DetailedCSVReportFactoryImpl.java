@@ -2,6 +2,8 @@ package org.pitest.mutationtest.report.detailed.csv;
 
 import org.pitest.mutationtest.ListenerArguments;
 import org.pitest.mutationtest.MutationResultListener;
+import org.pitest.mutationtest.report.detailed.csv.describers.DescribersFactory;
+import org.pitest.mutationtest.report.detailed.csv.describers.DescribersFactoryImpl;
 import org.pitest.mutationtest.report.detailed.csv.utils.FileWriter;
 import org.pitest.mutationtest.report.detailed.csv.utils.FileWriterImpl;
 
@@ -48,9 +50,15 @@ public class DetailedCSVReportFactoryImpl implements DetailedCSVReportFactory {
         return getMutationReporter(getReportFormatter(), mutationOutput);
     }
 
+
     @Override
     public MutationReporter getMutationReporter(ReportFormatter reportFormatter, Writer mutationOutput) {
-        return new MutationReporterImpl(reportFormatter, mutationOutput);
+
+        return new MutationReporterImpl(reportFormatter, getDescribersFactory(), mutationOutput);
+    }
+
+    private DescribersFactory getDescribersFactory() {
+        return new DescribersFactoryImpl();
     }
 
     @Override
