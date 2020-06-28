@@ -39,7 +39,7 @@ public class MutationReporterImpl implements MutationReporter {
         metaData.getMutations().forEach(mutation -> fileWriter.writeToFile(mutationOutput, generateMutationReport(mutation)));
     }
 
-    private Collection<TestDescriber> testDescribersFactory(ReportFormatter reportFormatter) {
+    private Collection<TestDescriber> createTestDescribers(ReportFormatter reportFormatter) {
 
         MutationDescriber mutationDescriber = describersFactory.getMutationDescriber(reportFormatter);
         return describersFactory.getTestDescribers(reportFormatter, mutationDescriber);
@@ -52,7 +52,7 @@ public class MutationReporterImpl implements MutationReporter {
      * @return CSV rows describing mutation result
      */
     private String generateMutationReport(MutationResult mutation) {
-        Collection<TestDescriber> describers = testDescribersFactory(reportFormatter);
+        Collection<TestDescriber> describers = createTestDescribers(reportFormatter);
 
         Stream<String> concatenatedDescription = concat(describers.stream().map(describer -> describer.describeTests(mutation).stream()).collect(Collectors.toSet()));
         return concatenatedDescription.collect(Collectors.joining(""));

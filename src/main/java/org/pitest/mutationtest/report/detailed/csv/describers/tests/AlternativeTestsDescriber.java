@@ -8,7 +8,6 @@ import org.pitest.mutationtest.report.detailed.csv.describers.MutationDescriber;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +28,7 @@ public class AlternativeTestsDescriber extends AbstractTestDescriber {
             HashSet<String> none = new HashSet<>(Collections.singletonList("none"));
             return describeTests(mutationInfo, none, DetectionStatus.NO_COVERAGE);
         }
-        Set<String> timedOutTests = coveringTests.stream().filter(Predicate.not(succeedingTests::contains)).collect(Collectors.toSet());
+        Set<String> timedOutTests = coveringTests.stream().filter(t -> !succeedingTests.contains(t)).collect(Collectors.toSet());
 
         if (timedOutTests.size() == 0) {
             System.out.println("No time out was detected for this mutation!");
