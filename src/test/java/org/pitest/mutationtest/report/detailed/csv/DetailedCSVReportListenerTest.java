@@ -12,13 +12,15 @@ import org.pitest.mutationtest.report.detailed.csv.utils.Constants;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 public class DetailedCSVReportListenerTest {
-    private static final List<String> killingTests = List.of("foo", "bar", "baz");
+    private static final List<String> killingTests = Arrays.asList("foo", "bar", "baz");
 
     private DetailedCSVReportListener testee;
 
@@ -46,7 +48,7 @@ public class DetailedCSVReportListenerTest {
                         3,
                         DetectionStatus.KILLED,
                         killingTests,
-                        List.of()
+                        Collections.emptyList()
                 )
         );
         this.testee.handleMutationResult(MutationTestResultMother
