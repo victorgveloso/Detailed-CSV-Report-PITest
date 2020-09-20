@@ -19,7 +19,25 @@ public class ReportFormatterImpl implements ReportFormatter {
 
     @Override
     public String clearSyntax(String s) {
-        return s.replaceFirst("\\.\\[engine:.+?]/\\[class:.+?]/\\[method:(.+?)\\(\\)]", "::$1");
+        String formatted = extractMethodSignature(s);
+        formatted = removeUndesiredTokens(formatted);
+        if (isWellFormatted(formatted)) {
+            return formatted;
+        } else {
+            return s;
+        }
+    }
+
+    private String removeUndesiredTokens(String formatted) {
+        return formatted.replaceAll(" |/|\\[.+?]|\\(.+?\\)", "").replaceAll("\\.*([.:])", "$1");
+    }
+
+    private String extractMethodSignature(String s) {
+        return s.replaceAll("\\[method:(.+?)\\(\\)]", ".$1");
+    }
+
+    private boolean isWellFormatted(String formatted) {
+        return formatted.matches("[.a-zA-Z0-9]+(?:::[.a-zA-Z0-9]+)?");
     }
 
     @Override
@@ -40,6 +58,6 @@ public class ReportFormatterImpl implements ReportFormatter {
      * @return Formatted path
      */
     private String getFormattedLocation(ClassName clazz, String method) {
-        return String.format("%s::%s", clazz.asJavaName(), method);
+        return String.format("%s.%s", clazz.asJavaName(), method);
     }
 }
