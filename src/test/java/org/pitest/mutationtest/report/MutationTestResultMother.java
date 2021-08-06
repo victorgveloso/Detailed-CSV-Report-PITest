@@ -14,27 +14,34 @@
  */
 package org.pitest.mutationtest.report;
 
-import static org.pitest.mutationtest.LocationMother.aMutationId;
-
-import java.util.Arrays;
-
+import org.pitest.coverage.TestInfo;
 import org.pitest.mutationtest.ClassMutationResults;
-import org.pitest.mutationtest.MutationMetaData;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.engine.MutationDetails;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.pitest.mutationtest.LocationMother.aMutationId;
 
 public class MutationTestResultMother {
 
   public static MutationDetails createDetails() {
-    return createDetails("file");
+    return createDetails("file", "clazz", "method");
   }
 
-  public static MutationDetails createDetails(final String sourceFile) {
-    return new MutationDetails(aMutationId().build(), sourceFile, "desc", 42, 0);
+  public static MutationDetails createDetails(final String file, final String clazz, final String method) {
+    return new MutationDetails(aMutationId(clazz, method).build(), file, "desc", 42, 0);
   }
 
-  public static MutationMetaData createMetaData(final MutationResult... mrs) {
-    return new MutationMetaData(Arrays.asList(mrs));
+  public static MutationResult createResult() {
+    return new MutationResult(createDetails(), null);
+  }
+
+  public static MutationResult createResult(final String file, final String clazz, final String method) {
+    return new MutationResult(createDetails(file, clazz, method), null);
   }
 
   public static ClassMutationResults createClassResults(
@@ -42,4 +49,13 @@ public class MutationTestResultMother {
     return new ClassMutationResults(Arrays.asList(mrs));
   }
 
+  public static MutationDetails getDetails(List<String> tests) {
+    MutationDetails details = createDetails();
+    details.addTestsInOrder(tests.stream().map(MutationTestResultMother::getTestInfo).collect(Collectors.toList()));
+    return details;
+  }
+
+  private static TestInfo getTestInfo(String s) {
+    return new TestInfo(null, s, 0, Optional.empty(), 0);
+  }
 }

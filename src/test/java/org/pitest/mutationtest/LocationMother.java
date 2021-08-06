@@ -14,8 +14,6 @@ public class LocationMother {
   public interface MutationIdentifierBuilder extends
   SequenceBuilder<MutationIdentifier> {
 
-    MutationIdentifierBuilder withLocation(Location location);
-
     MutationIdentifierBuilder withLocation(Builder<Location> location);
 
     MutationIdentifierBuilder withIndex(int index);
@@ -45,8 +43,8 @@ public class LocationMother {
 
   }
 
-  public static LocationBuilder aLocation(String clazz) {
-    return aLocation().withClass(ClassName.fromString(clazz));
+    public static LocationBuilder aLocation(String clazz, String method) {
+        return aLocation().withClass(ClassName.fromString(clazz)).withMethod(method);
   }
 
   public static LocationBuilder aLocation() {
@@ -55,14 +53,16 @@ public class LocationMother {
         .withMethodDescription("()I");
   }
 
-  private static Generator<LocationBuilder, Location> locationSeed() {
-    return b -> Location.location(b._Class(),
-        MethodName.fromString(b._Method()), b._MethodDescription());
-  }
+    public static MutationIdentifierBuilder aMutationId(String clazz, String method) {
+        return QB.builder(MutationIdentifierBuilder.class, idSeed()).withLocation(aLocation(clazz, method)).withIndex(1).withMutator("mutator");
+    }
 
-  public static MutationIdentifierBuilder aMutationId() {
-    return QB.builder(MutationIdentifierBuilder.class, idSeed())
-        .withLocation(aLocation()).withIndex(1).withMutator("mutator");
+    public static MutationIdentifierBuilder aMutationId() {
+        return QB.builder(MutationIdentifierBuilder.class, idSeed()).withLocation(aLocation()).withIndex(1).withMutator("mutator");
+    }
+
+    private static Generator<LocationBuilder, Location> locationSeed() {
+        return b -> Location.location(b._Class(), MethodName.fromString(b._Method()), b._MethodDescription());
   }
 
   private static Generator<MutationIdentifierBuilder, MutationIdentifier> idSeed() {

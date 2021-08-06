@@ -4,6 +4,11 @@ Adds support to pitest for exporting detailed CSV files. Transform last column (
 
 ## Based on [JUnit 5 plugin](https://github.com/pitest/pitest-junit5-plugin)
 
+## Compatibility
+
+DetailedCSV 4.1 works on PIT from 1.4.1 to 1.6.1
+DetailedCSV 5.0 works on PIT from 1.6.2 and above
+
 ## Usage
 
 In a terminal run:

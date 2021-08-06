@@ -2,10 +2,14 @@ package org.pitest.mutationtest.report.detailed.csv;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.pitest.mutationtest.MutationResult;
+import org.pitest.mutationtest.report.MutationTestResultMother;
 
 class ReportFormatterTest {
     ReportFormatter fmt;
+
 
     @BeforeEach
     void setUp() {
@@ -30,5 +34,34 @@ class ReportFormatterTest {
     @Test
     void testClearSyntaxOfParametrizedTest() {
         Assertions.assertEquals("okhttp3.internal.cache.DiskLruCacheTest.editSnapshotAfterChangeCommitted", fmt.clearSyntax("okhttp3.internal.cache.DiskLruCacheTest.editSnapshotAfterChangeCommitted[FileSystem.SYSTEM](okhttp3.internal.cache.DiskLruCacheTest)"));
+    }
+
+    @Test
+    void testMakeCsvFromStrings() {
+        Assertions.assertEquals("first,second,third,fourth", fmt.makeCsv("first", "second", "third", "fourth"));
+    }
+
+    @Test
+    void testMakeCsvFromIntegers() {
+        Assertions.assertEquals("1,2,3,4,5,6", fmt.makeCsv(1, 2, 3, 4, 5, 6));
+    }
+
+    @Nested
+    class RequiresMutationResult {
+        MutationResult mutation;
+        private String clazz;
+        private String method;
+
+        @BeforeEach
+        void setUp() {
+            clazz = "Example.Package.ExampleClass";
+            method = "ExampleMethod";
+            mutation = MutationTestResultMother.createResult("", clazz, method);
+        }
+
+        @Test
+        void testFormattedLocation() {
+            Assertions.assertEquals(String.format("%s.%s", clazz, method), fmt.getFormattedLocation(mutation));
+        }
     }
 }
