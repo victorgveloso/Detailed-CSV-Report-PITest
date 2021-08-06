@@ -57,7 +57,13 @@ public class DetailedCSVReportFactoryImpl implements DetailedCSVReportFactory {
         return new MutationReporterImpl(reportFormatter, getDescribersFactory(), mutationOutput);
     }
 
-    private DescribersFactory getDescribersFactory() {
+    /**
+     * Factory method for the default test describers' factory
+     * For internal use and test-only!
+     *
+     * @return Default test describers' factory
+     */
+    DescribersFactory getDescribersFactory() {
         return new DescribersFactoryImpl();
     }
 

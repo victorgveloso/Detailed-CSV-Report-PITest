@@ -16,22 +16,22 @@ import java.util.stream.Stream;
  * Creates reports about mutation testing
  */
 public class MutationReporterImpl implements MutationReporter {
-    // Utility class
-    private ReportFormatter reportFormatter;
     private DescribersFactory describersFactory;
+    private Collection<TestDescriber> testDescribers;
     // Output file
     private Writer mutationOutput;
 
     /**
      * Main constructor
      * @param reportFormatter Utility object for CSV formatting
-     * @param describersFactory
+     * @param describersFactory Factory of test describers
      * @param mutationOutput  Report output file
      */
     public MutationReporterImpl(ReportFormatter reportFormatter, DescribersFactory describersFactory, Writer mutationOutput) {
-        this.reportFormatter = reportFormatter;
         this.describersFactory = describersFactory;
         this.mutationOutput = mutationOutput;
+
+        testDescribers = createTestDescribers(reportFormatter);
     }
 
     @Override
@@ -39,8 +39,13 @@ public class MutationReporterImpl implements MutationReporter {
         metaData.getMutations().forEach(mutation -> fileWriter.writeToFile(mutationOutput, generateMutationReport(mutation)));
     }
 
+    /**
+     * Factory method of test describers
+     *
+     * @param reportFormatter Utility object for CSV formatting
+     * @return Default test describers
+     */
     private Collection<TestDescriber> createTestDescribers(ReportFormatter reportFormatter) {
-
         MutationDescriber mutationDescriber = describersFactory.getMutationDescriber(reportFormatter);
         return describersFactory.getTestDescribers(reportFormatter, mutationDescriber);
     }
@@ -52,9 +57,8 @@ public class MutationReporterImpl implements MutationReporter {
      * @return CSV rows describing mutation result
      */
     private String generateMutationReport(MutationResult mutation) {
-        Collection<TestDescriber> describers = createTestDescribers(reportFormatter);
 
-        Stream<String> concatenatedDescription = concat(describers.stream().map(describer -> describer.describeTests(mutation).stream()).collect(Collectors.toSet()));
+        Stream<String> concatenatedDescription = concat(testDescribers.stream().map(describer -> describer.describeTests(mutation).stream()).collect(Collectors.toSet()));
         return concatenatedDescription.collect(Collectors.joining(""));
     }
 
